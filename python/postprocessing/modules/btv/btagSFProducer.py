@@ -36,7 +36,7 @@ class btagSFProducer(Module):
     """
 
     def __init__(
-            self, era, algo='csvv2', selectedWPs=['M', 'shape_corr'],
+            self, era, algo='deepjet', selectedWPs=['M', 'shape_corr'],
             sfFileName=None, verbose=0, jesSystsForShape=["jes"]
     ):
         self.era = era
@@ -114,7 +114,7 @@ class btagSFProducer(Module):
                     'supported_wp': ["L", "M", "T", "shape_corr"]
                 },
                 '2017': {
-                    'inputFileName': "DeepFlavour_94XSF_V3_B_F.csv",
+                    'inputFileName': "DeepJet_106XUL17SF.csv",
                     'measurement_types': {
                         0: "comb",  # b
                         1: "comb",  # c
@@ -346,3 +346,4 @@ class btagSFProducer(Module):
 
 btagSF2016 = lambda: btagSFProducer("2016")
 btagSF2017 = lambda: btagSFProducer("2017")
+btagSF2018 = lambda: btagSFProducer("2018")
