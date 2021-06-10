@@ -642,7 +642,16 @@ class fatJetUncertaintiesProducer(Module):
                         jmstau21DDTDownVal = 0.990
                         jmstau21DDTUpVal = 1.010
                         self.jetSmearer.jmr_vals = [1.124, 1.208, 1.040]
-
+                    elif self.era in ["UL2017"]:
+                        jmstau21DDTNomVal = 0.983
+                        jmstau21DDTDownVal = 0.976
+                        jmstau21DDTUpVal = 0.99
+                        self.jetSmearer.jmr_vals = [1.080, 1.161, 0.999]
+                    elif self.era in ["UL2018"]:
+                        jmstau21DDTNomVal = 1.000  # tau21DDT < 0.43 WP
+                        jmstau21DDTDownVal = 0.990
+                        jmstau21DDTUpVal = 1.010
+                        self.jetSmearer.jmr_vals = [1.124, 1.208, 1.040]    
                     (jet_msdcorr_tau21DDT_jmrNomVal,
                      jet_msdcorr_tau21DDT_jmrUpVal,
                      jet_msdcorr_tau21DDT_jmrDownVal
