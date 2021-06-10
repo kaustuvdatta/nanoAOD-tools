@@ -97,7 +97,7 @@ class btagSFProducer(Module):
                         2 : "incl"   # light
                     },
                     'supported_wp' : [ "L", "M", "T", "shape_corr"]
-                }
+                },
                 'UL2017': {
                     'inputFileName': "DeepCSV_106XUL17SF.csv",
                     'measurement_types': {
