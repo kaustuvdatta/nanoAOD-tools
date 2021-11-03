@@ -200,5 +200,9 @@ puWeight_UL2018 = lambda: puWeightProducer(pufile_mcUL2018,
                                            "pileup",
                                            verbose=False,
                                            doSysVar=True)
+
 puAutoWeight_UL2018 = lambda: puWeightProducer(
+    "auto", pufile_dataUL2018, "pu_mc", "pileup", verbose=False)
+
+puAutoWeight_UL2017 = lambda: puWeightProducer(
     "auto", pufile_dataUL2018, "pu_mc", "pileup", verbose=False)
