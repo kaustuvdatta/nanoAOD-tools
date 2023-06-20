@@ -32,7 +32,8 @@ def is_relevant_syst_for_shape_corr(flavor_btv, syst, jesSystsForShape=["jes"]):
 class btagSFProducer(Module):
     """Calculate btagging scale factors
     """
-    def __init__(self, era, algo='deepjet', selectedWPs=['M', 'shape_corr'], sfFileName=None, verbose=0, jesSystsForShape=["jes"]):
+    def __init__(self, era, algo='deepjet', selectedWPs=['M'],#, 'shape_corr'], #? for 2016
+                 sfFileName=None, verbose=0, jesSystsForShape=["jes"]):
 
         self.era = era
         self.algo = algo.lower()
@@ -127,17 +128,9 @@ class btagSFProducer(Module):
                 },
             },
             'deepjet' : {
-                'Legacy2016' : {
-                    'inputFileName' : "DeepJet_2016LegacySF_V1.csv",
-                    'measurement_types' : {
-                        0 : "comb",  # b
-                        1 : "comb",  # c
-                        2 : "incl"   # light
-                    },
-                    'supported_wp' : [ "L", "M", "T", "shape_corr"]
-                },
+                
                 '2017' : {
-                    'inputFileName' : "DeepJet_106XUL17SF.csv",
+                    'inputFileName' : "DeepJet_106XUL17SF.csv",#from https://github.com/cms-nanoAOD/nanoAOD-tools/tree/master/data/btagSF
                     'measurement_types' : {
                         0 : "comb",  # b
                         1 : "comb",  # c
@@ -146,7 +139,7 @@ class btagSFProducer(Module):
                     'supported_wp' : [ "L", "M", "T", "shape_corr"]
                 },
                 '2018' : {
-                    'inputFileName' : "DeepJet_102XSF_V2.csv",
+                    'inputFileName' : "DeepJet_106XUL18SF.csv",#from https://github.com/cms-nanoAOD/nanoAOD-tools/tree/master/data/btagSF
                     'measurement_types' : {
                         0 : "comb",  # b
                         1 : "comb",  # c
@@ -154,32 +147,42 @@ class btagSFProducer(Module):
                     },
                     'supported_wp' : [ "L", "M", "T", "shape_corr"]
                 },
+                'UL2016' : {
+                    'inputFileName' : "DeepJet_106XUL16postVFPSF_v2_modified.csv",
+                    'measurement_types' : {
+                        0 : "comb",  # b
+                        1 : "comb",  # c
+                        2 : "incl"   # light
+                    },
+                    'supported_wp' : [ "L", "M", "T"]#, "shape_corr"]
+                },
+                'UL2016_preVFP' : {
+                    'inputFileName' : "DeepJet_106XUL16preVFPSF_v1_modified.csv",
+                    'measurement_types' : {
+                        0 : "comb",  # b
+                        1 : "comb",  # c
+                        2 : "incl"   # light
+                    },
+                    'supported_wp' : [ "L", "M", "T"]#, "shape_corr"]
+                },
                 'UL2017': {
-                    'inputFileName': "DeepJet_106XUL17SF.csv",
+                    'inputFileName': "DeepJet_106XUL17SF_V2p1.csv",#https://twiki.cern.ch/twiki/pub/CMS/BtagRecommendation106XUL17/DeepJet_106XUL17SF_V2p1.csv (https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation106XUL17)
                     'measurement_types': {
                         0: "comb",  # b
                         1: "comb",  # c
                         2: "incl"   # light
                     },
-                    'supported_wp': ["L", "M", "T", "shape_corr"]
+                    'supported_wp': ["L", "M", "T"]#, "shape_corr"]
                 },
-                '2018': {
-                    'inputFileName': "DeepJet_102XSF_V1.csv",
-                    'measurement_types': {
-                        0: "comb",  # b
-                        1: "comb",  # c
-                        2: "incl"   # light
-                    },
-                    'supported_wp': ["L", "M", "T", "shape_corr"]
-                },
+                
                 'UL2018': {
-                    'inputFileName': "DeepJet_106XUL18SF.csv",
+                    'inputFileName': "DeepJet_106XUL18SF_V1p1.csv",#from https://twiki.cern.ch/twiki/pub/CMS/BtagRecommendation106XUL18/DeepJet_106XUL18SF_V1p1.csv
                     'measurement_types': {
                         0: "comb",  # b
                         1: "comb",  # c
                         2: "incl"   # light
                     },
-                    'supported_wp': ["L", "M", "T", "shape_corr"]
+                    'supported_wp': ["L", "M", "T"]#, "shape_corr"]
                 },
             },
             'cmva' : {
@@ -255,7 +258,8 @@ class btagSFProducer(Module):
     def beginJob(self):
         # initialize BTagCalibrationReader
         # (cf. https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagCalibration )
-	self.calibration = ROOT.BTagCalibration(self.algo, os.path.join(self.inputFilePath, self.inputFileName))
+        print(self.algo, os.path.join(self.inputFilePath, self.inputFileName))
+        self.calibration = ROOT.BTagCalibration(self.algo, os.path.join(self.inputFilePath, self.inputFileName))
         self.readers = {}
         for wp in self.selectedWPs:
             wp_btv = { "l" : 0, "m" : 1, "t" : 2, "shape_corr" : 3 }.get(wp.lower(), None)
@@ -365,7 +369,12 @@ class btagSFProducer(Module):
         else:
             raise ValueError("ERROR: Invalid algorithm '%s'!" % self.algo)
 
+        #if not('2016' in self.era):
+        #print('b-tagging era',self.era)
         preloaded_jets = [(jet.pt, jet.eta, self.getFlavorBTV(jet.hadronFlavour), getattr(jet, discr)) for jet in jets]
+        #else:
+        #    preloaded_jets = [(jet.pt, jet.eta, jet.hadronFlavour, getattr(jet, discr)) for jet in jets]
+
         for wp in self.selectedWPs:
             reader = self.getReader(wp)
             isShape = ( wp == 'shape_corr' )
@@ -383,6 +392,7 @@ btagSF2017 = lambda : btagSFProducer("2017")
 btagSF2018 = lambda : btagSFProducer("2018")
 
 
-btagSF_UL2016 = lambda : btagSFProducer("UL2016")
-btagSF_UL2017 = lambda : btagSFProducer("UL2017")
-btagSF_UL2018 = lambda : btagSFProducer("UL2018")
+btagSF_UL2016_preVFP = lambda : btagSFProducer(algo='deepjet',era="UL2016_preVFP")
+btagSF_UL2016 = lambda : btagSFProducer(algo='deepjet',era="UL2016")
+btagSF_UL2017 = lambda : btagSFProducer(algo='deepjet',era="UL2017")
+btagSF_UL2018 = lambda : btagSFProducer(algo='deepjet',era="UL2018")

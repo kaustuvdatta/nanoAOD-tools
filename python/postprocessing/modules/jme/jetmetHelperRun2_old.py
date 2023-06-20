@@ -13,7 +13,7 @@ jecTagsMC = {
     '2017': 'Fall17_17Nov2017_V32_MC',
     '2018': 'Autumn18_V19_MC',
     'UL2016_preVFP': 'Summer19UL16APV_V7_MC',
-    'UL2016': 'Summer19UL16_V7_MC',
+    'UL2016': 'Summer19UL16_V5_MC',
     'UL2017': 'Summer19UL17_V5_MC',
     'UL2018': 'Summer19UL18_V5_MC',
 }
@@ -30,7 +30,7 @@ archiveTagsDATA = {
     '2017': 'Fall17_17Nov2017_V32_DATA',
     '2018': 'Autumn18_V19_DATA',
     'UL2016_preVFP': 'Summer19UL16APV_V7_DATA',
-    'UL2016': 'Summer19UL16_V7_DATA',
+    'UL2016': 'Summer19UL16_V5_DATA',
     'UL2017': 'Summer19UL17_V5_DATA',
     'UL2018': 'Summer19UL18_V5_DATA'
 }

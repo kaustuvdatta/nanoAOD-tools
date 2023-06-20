@@ -131,21 +131,21 @@ class fatJetUncertaintiesProducer(Module):
 
         # read jet energy scale (JES) uncertainties
         # (downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC )
-        self.jesInputArchivePath = os.environ['CMSSW_BASE'] + \
-            "/src/PhysicsTools/NanoAODTools/data/jme/"
+        self.jesInputArchivePath = os.environ['CMSSW_BASE'] + "/src/PhysicsTools/NanoAODTools/data/jme/"
         # Text files are now tarred so must extract first into temporary
         # directory (gets deleted during python memory management at script exit)
         self.jesArchive = tarfile.open(
             self.jesInputArchivePath + globalTag +
             ".tgz", "r:gz") if not archive else tarfile.open(
-                self.jesInputArchivePath + archive + ".tgz", "r:gz")
+            self.jesInputArchivePath + archive + ".tgz", "r:gz")
+
         self.jesInputFilePath = tempfile.mkdtemp()
         self.jesArchive.extractall(self.jesInputFilePath)
 
         if len(jesUncertainties) == 1 and jesUncertainties[0] == "Total":
             self.jesUncertaintyInputFileName = globalTag + "_Uncertainty_" + jetType + ".txt"
         elif jesUncertainties[0] == "Merged" and not self.isData:
-            self.jesUncertaintyInputFileName = "Regrouped_" + \
+            self.jesUncertaintyInputFileName = "RegroupedV2_" + \
                 globalTag + "_UncertaintySources_" + jetType + ".txt"
         else:
             self.jesUncertaintyInputFileName = globalTag + \
@@ -642,6 +642,11 @@ class fatJetUncertaintiesProducer(Module):
                         jmstau21DDTDownVal = 0.990
                         jmstau21DDTUpVal = 1.010
                         self.jetSmearer.jmr_vals = [1.124, 1.208, 1.040]
+                    elif "UL2016" in self.era: #KD-using 2016 values from above, not UL2016, since not available yet, as of 29/08/22, and it seems the official recipe does the same as I do for UL17/18 vs. 17/18
+                        jmstau21DDTNomVal = 1.014
+                        jmstau21DDTDownVal = 1.007
+                        jmstau21DDTUpVal = 1.021
+                        self.jetSmearer.jmr_vals = [1.086, 1.176, 0.996]
                     elif self.era in ["UL2017"]:
                         jmstau21DDTNomVal = 0.983
                         jmstau21DDTDownVal = 0.976
