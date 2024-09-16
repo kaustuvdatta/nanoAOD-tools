@@ -452,6 +452,9 @@ class jetmetUncertaintiesProducer(Module):
 
             resolution = self.jetSmearer.jer.getResolution(params)
 
+            ##################
+            # 3x smearing
+            ##################
             return abs(jet.pt - genjet.pt) < 3 * resolution * jet.pt
 
         if not self.isData:

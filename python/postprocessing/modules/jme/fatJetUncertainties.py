@@ -164,6 +164,7 @@ class fatJetUncertaintiesProducer(Module):
         if applyHEMfix:
             self.jesUncertainties.append("HEMIssue")
 
+        print(self.jesInputFilePath)
         self.jetReCalibrator = JetReCalibrator(
             globalTag,
             jetType,

@@ -154,7 +154,7 @@ class btagSFProducer(Module):
                         1 : "comb",  # c
                         2 : "incl"   # light
                     },
-                    'supported_wp' : [ "L", "M", "T"]#, "shape_corr"]
+                    'supported_wp' : [ "L", "M", "T", "shape_corr"]
                 },
                 'UL2016_preVFP' : {
                     'inputFileName' : "DeepJet_106XUL16preVFPSF_v1_modified.csv",
@@ -163,26 +163,28 @@ class btagSFProducer(Module):
                         1 : "comb",  # c
                         2 : "incl"   # light
                     },
-                    'supported_wp' : [ "L", "M", "T"]#, "shape_corr"]
+                    'supported_wp' : [ "L", "M", "T", "shape_corr"]
                 },
                 'UL2017': {
-                    'inputFileName': "DeepJet_106XUL17SF_V2p1.csv",#https://twiki.cern.ch/twiki/pub/CMS/BtagRecommendation106XUL17/DeepJet_106XUL17SF_V2p1.csv (https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation106XUL17)
+                    'inputFileName': "DeepJet_106XUL17_gitV1_modified.csv",#from https://gitlab.cern.ch/cms-btv/btv-json-sf/-/blob/master/data/UL2017/wp_deepJet.csv?plain=1
+                    #"DeepJet_106XUL17SF_V2p1.csv",#https://twiki.cern.ch/twiki/pub/CMS/BtagRecommendation106XUL17/DeepJet_106XUL17SF_V2p1.csv (https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation106XUL17)
                     'measurement_types': {
                         0: "comb",  # b
                         1: "comb",  # c
                         2: "incl"   # light
                     },
-                    'supported_wp': ["L", "M", "T"]#, "shape_corr"]
+                    'supported_wp': ["L", "M", "T", "shape_corr"]
                 },
                 
                 'UL2018': {
-                    'inputFileName': "DeepJet_106XUL18SF_V1p1.csv",#from https://twiki.cern.ch/twiki/pub/CMS/BtagRecommendation106XUL18/DeepJet_106XUL18SF_V1p1.csv
+                    'inputFileName': "DeepJet_106XUL18_gitV1_modified.csv",#from https://gitlab.cern.ch/cms-btv/btv-json-sf/-/blob/master/data/UL2018/wp_deepJet.csv?plain=1
+                    #"DeepJet_106XUL18SF_V1p1.csv",#from https://twiki.cern.ch/twiki/pub/CMS/BtagRecommendation106XUL18/DeepJet_106XUL18SF_V1p1.csv
                     'measurement_types': {
                         0: "comb",  # b
                         1: "comb",  # c
                         2: "incl"   # light
                     },
-                    'supported_wp': ["L", "M", "T"]#, "shape_corr"]
+                    'supported_wp': ["L", "M", "T", "shape_corr"]
                 },
             },
             'cmva' : {
@@ -259,7 +261,7 @@ class btagSFProducer(Module):
         # initialize BTagCalibrationReader
         # (cf. https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagCalibration )
         print(self.algo, os.path.join(self.inputFilePath, self.inputFileName))
-        self.calibration = ROOT.BTagCalibration(self.algo, os.path.join(self.inputFilePath, self.inputFileName))
+        self.calibration = ROOT.BTagCalibration(self.algo, os.path.join(self.inputFilePath, self.inputFileName), True)
         self.readers = {}
         for wp in self.selectedWPs:
             wp_btv = { "l" : 0, "m" : 1, "t" : 2, "shape_corr" : 3 }.get(wp.lower(), None)

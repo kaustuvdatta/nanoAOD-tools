@@ -32,7 +32,7 @@ archiveTagsDATA = {
     'UL2016_preVFP': 'Summer19UL16APV_V7_DATA',
     'UL2016': 'Summer19UL16_V7_DATA',
     'UL2017': 'Summer19UL17_V5_DATA',
-    'UL2018': 'Summer19UL18_V5_DATA'
+    'UL2018': 'Summer19UL18_V6_DATA'
 }
 
 jecTagsDATA = {
@@ -65,10 +65,10 @@ jecTagsDATA = {
     'UL2017D': 'Summer19UL17_RunD_V5_DATA',
     'UL2017E': 'Summer19UL17_RunE_V5_DATA',
     'UL2017F': 'Summer19UL17_RunF_V5_DATA',
-    'UL2018A': 'Summer19UL18_RunA_V5_DATA',
-    'UL2018B': 'Summer19UL18_RunB_V5_DATA',
-    'UL2018C': 'Summer19UL18_RunC_V5_DATA',
-    'UL2018D': 'Summer19UL18_RunD_V5_DATA',
+    'UL2018A': 'Summer19UL18_RunA_V6_DATA',
+    'UL2018B': 'Summer19UL18_RunB_V6_DATA',
+    'UL2018C': 'Summer19UL18_RunC_V6_DATA',
+    'UL2018D': 'Summer19UL18_RunD_V6_DATA',
 }
 
 # https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
