@@ -447,6 +447,7 @@ class fatJetUncertaintiesProducer(Module):
             else:
                 jet_rawpt = -1.0 * jet_pt  # If factor not present factor will be saved as -1
                 jet_rawmass = -1.0 * jet_mass  # If factor not present factor will be saved as -1
+
             (jet_pt, jet_mass) = self.jetReCalibrator.correct(jet, rho)
             jet.pt = jet_pt
             jet.mass = jet_mass
@@ -469,7 +470,7 @@ class fatJetUncertaintiesProducer(Module):
                                                                           1)
             jets_corr_JER.append(jet_pt_jerNomVal)
 
-            jet_pt_nom = jet_pt_jerNomVal * jet_pt if self.applySmearing else jet_pt
+            jet_pt_nom = jet_pt_jerNomVal * jet_pt if self.applySmearing else jet_pt #smearing not applied, thus ratio of pt_nom and pt_raw is the effect of the JEC
             if jet_pt_nom < 0.0:
                 jet_pt_nom *= -1.0
             jets_pt_nom.append(jet_pt_nom)
@@ -548,8 +549,14 @@ class fatJetUncertaintiesProducer(Module):
                     genGroomedSubJets = None
                     genGroomedJet = None
                 if jet.subJetIdx1 >= 0 and jet.subJetIdx2 >= 0:
-                    groomedP4 = subJets[jet.subJetIdx1].p4() + subJets[
-                        jet.subJetIdx2].p4()  # check subjet jecs
+                    #groomedP4 = subJets[jet.subJetIdx1].p4() + subJets[
+                    #    jet.subJetIdx2].p4()  # check subjet jecs
+
+                    #incoroporating change proposed as per: https://github.com/cms-nanoAOD/nanoAOD-tools/issues/280 where one undoes 
+                    #application of JECs for subjets to get the correctly uncorrected msoftdrop_raw, AK8 JEC (+ syst. variations ) 
+                    #applied thereof to msoftdrop_raw at analysis level
+                    groomedP4 = (subJets[jet.subJetIdx1].p4() * (1. - subJets[jet.subJetIdx1].rawFactor)) + (subJets[jet.subJetIdx2].p4() * (1. - subJets[jet.subJetIdx2].rawFactor))
+
                 else:
                     groomedP4 = None
 
