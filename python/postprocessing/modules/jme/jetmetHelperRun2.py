@@ -165,7 +165,7 @@ def createJMECorrector(isMC=True,
                 jetType=jetType,
                 metBranchName=met_,
                 isData=True)
-    # no MET variations calculated
+    # no MET variations calculated in above
     else:
         if isMC:
             jmeCorrections = lambda: fatJetUncertaintiesProducer(

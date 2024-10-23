@@ -110,7 +110,7 @@ class jetmetUncertaintiesProducer(Module):
         if len(jesUncertainties) == 1 and jesUncertainties[0] == "Total":
             self.jesUncertaintyInputFileName = globalTag + "_Uncertainty_" + jetType + ".txt"
         elif jesUncertainties[0] == "Merged" and not self.isData:
-            self.jesUncertaintyInputFileName = "Regrouped_" + \
+            self.jesUncertaintyInputFileName = "RegroupedV2_" + \
                 globalTag + "_UncertaintySources_" + jetType + ".txt"
         else:
             self.jesUncertaintyInputFileName = globalTag + \
@@ -128,6 +128,7 @@ class jetmetUncertaintiesProducer(Module):
                 self.jesUncertainties = sources
         if applyHEMfix:
             self.jesUncertainties.append("HEMIssue")
+        print(self.jesInputFilePath)
 
         # Define the jet recalibrator
         self.jetReCalibrator = JetReCalibrator(
@@ -453,7 +454,7 @@ class jetmetUncertaintiesProducer(Module):
             resolution = self.jetSmearer.jer.getResolution(params)
 
             ##################
-            # 3x smearing
+            # 3 * sigma * reco pT
             ##################
             return abs(jet.pt - genjet.pt) < 3 * resolution * jet.pt
 

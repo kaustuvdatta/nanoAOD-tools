@@ -35,11 +35,7 @@ class fatJetUncertaintiesProducer(Module):
         self.noGroom = noGroom
         self.isData = isData
         self.applySmearing = applySmearing if not isData else False  # don't smear for data
-        # ---------------------------------------------------------------------
-        # CV: globalTag and jetType not yet used in the jet smearer, as there
-        # is no consistent set of txt files for JES uncertainties and JER scale
-        # factors and uncertainties yet
-        # ---------------------------------------------------------------------
+        
         self.splitJER = splitJER
         if self.splitJER:
             self.splitJERIDs = list(range(6))
@@ -47,16 +43,20 @@ class fatJetUncertaintiesProducer(Module):
             self.splitJERIDs = [""]  # "empty" ID for the overall JER
 
         self.jesUncertainties = jesUncertainties
+        
         # smear jet pT to account for measured difference in JER between data
         # and simulation.
         if jerTag != "":
             self.jerInputFileName = jerTag + "_PtResolution_" + jetType + ".txt"
+            #self.jerSubjetInputFileName = jerTag + "_PtResolution_" + jetType.split("AK4PFPuppi") + ".txt"#hard-coding since this module is only called when running corrections for AK8PFPUPPI
             self.jerUncertaintyInputFileName = jerTag + "_SF_" + jetType + ".txt"
+            #self.jerSubjetUncertaintyInputFileName = jerTag + "_SF_" + jetType.split("AK4PFPuppi") + ".txt"#hard-coding since this module is only called when running corrections for AK8PFPUPPI
         else:
             print(
-                "WARNING: jerTag is empty!!! This module will soon be "
+                "WARNING: jerTag is empty!!! Using outdated jer files instead of latest. This module will soon be "
                 "deprecated! Please use jetmetHelperRun2 in the future."
             )
+            
             if era == "2016":
                 self.jerInputFileName = ''.join([
                     "Summer16_25nsV1_MC_PtResolution_", jetType, ".txt"])
@@ -130,7 +130,7 @@ class fatJetUncertaintiesProducer(Module):
                 self.jmsVals = [0.982, 0.978, 0.986]
 
         # read jet energy scale (JES) uncertainties
-        # (downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC )
+
         self.jesInputArchivePath = os.environ['CMSSW_BASE'] + "/src/PhysicsTools/NanoAODTools/data/jme/"
         # Text files are now tarred so must extract first into temporary
         # directory (gets deleted during python memory management at script exit)
@@ -143,11 +143,15 @@ class fatJetUncertaintiesProducer(Module):
         self.jesArchive.extractall(self.jesInputFilePath)
 
         if len(jesUncertainties) == 1 and jesUncertainties[0] == "Total":
+
             self.jesUncertaintyInputFileName = globalTag + "_Uncertainty_" + jetType + ".txt"
+
         elif jesUncertainties[0] == "Merged" and not self.isData:
             self.jesUncertaintyInputFileName = "RegroupedV2_" + \
                 globalTag + "_UncertaintySources_" + jetType + ".txt"
+
         else:
+            
             self.jesUncertaintyInputFileName = globalTag + \
                 "_UncertaintySources_" + jetType + ".txt"
 
@@ -431,10 +435,24 @@ class fatJetUncertaintiesProducer(Module):
 
         rho = getattr(event, self.rhoBranchName)
 
+        def resolution_matching(jet, genjet, res_factor=3):
+            '''Helper function to match to gen based on pt difference'''
+            params = ROOT.PyJetParametersWrapper()
+            params.setJetEta(jet.eta)
+            params.setJetPt(jet.pt)
+            params.setRho(rho)
+
+            resolution = self.jetSmearer.jer.getResolution(params)
+
+            ##################
+            # 3 * sigma * reco pT
+            ##################
+            return abs(jet.pt - genjet.pt) < res_factor * resolution * jet.pt
+
         # match reconstructed jets to generator level ones
         # (needed to evaluate JER scale factors and uncertainties)
         if not self.isData:
-            pairs = matchObjectCollection(jets, genJets)
+            pairs = matchObjectCollection(jets, genJets, dRmax=0.4, presel=resolution_matching)
 
         for jet in jets:
             # jet pt and mass corrections
@@ -470,7 +488,7 @@ class fatJetUncertaintiesProducer(Module):
                                                                           1)
             jets_corr_JER.append(jet_pt_jerNomVal)
 
-            jet_pt_nom = jet_pt_jerNomVal * jet_pt if self.applySmearing else jet_pt #smearing not applied, thus ratio of pt_nom and pt_raw is the effect of the JEC
+            jet_pt_nom = jet_pt_jerNomVal * jet_pt if self.applySmearing else jet_pt #if smearing is not applied, then ratio of pt_nom and pt_raw is the effect of the JEC
             if jet_pt_nom < 0.0:
                 jet_pt_nom *= -1.0
             jets_pt_nom.append(jet_pt_nom)
@@ -486,6 +504,7 @@ class fatJetUncertaintiesProducer(Module):
                 # set values to 1 for data so that jet_mass_nom is not smeared
                 (jet_mass_jmrNomVal, jet_mass_jmrUpVal,
                  jet_mass_jmrDownVal) = (1, 1, 1)
+                
             jets_corr_JMS.append(jmsNomVal)
             jets_corr_JMR.append(jet_mass_jmrNomVal)
 
@@ -513,6 +532,9 @@ class fatJetUncertaintiesProducer(Module):
                     for jerID in self.splitJERIDs
                 }
                 thisJERID = self.getJERsplitID(jet_pt_nom, jet.eta)
+
+
+
                 jet_pt_jerUp[thisJERID] = jet_pt_jerUpVal * jet_pt
                 jet_pt_jerDown[thisJERID] = jet_pt_jerDownVal * jet_pt
                 jet_mass_jerUp[thisJERID] = jet_pt_jerUpVal * \
@@ -563,6 +585,9 @@ class fatJetUncertaintiesProducer(Module):
                 jet_msdcorr_raw = groomedP4.M() if groomedP4 is not None else 0.0
                 # raw value always stored withoud mass correction
                 jets_msdcorr_raw.append(jet_msdcorr_raw)
+
+
+
                 # LC: Apply PUPPI SD mass correction https://github.com/cms-jet/PuppiSoftdropMassCorr/
                 puppisd_genCorr = self.puppisd_corrGEN.Eval(jet.pt)
                 if abs(jet.eta) <= 1.3:
