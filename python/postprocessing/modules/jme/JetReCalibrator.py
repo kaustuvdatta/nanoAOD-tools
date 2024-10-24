@@ -37,6 +37,8 @@ class JetReCalibrator:
         # Make base corrections
         # "%s/src/CMGTools/RootTools/data/jec" % os.environ['CMSSW_BASE'];
         path = os.path.expandvars(jecPath)
+        print("Recalibrator attempting to read:", (path, globalTag, jetFlavour))
+        
         self.L1JetPar = ROOT.JetCorrectorParameters(
             "%s/%s_L1FastJet_%s.txt" % (path, globalTag, jetFlavour), "")
         self.L2JetPar = ROOT.JetCorrectorParameters(
@@ -155,3 +157,33 @@ class JetReCalibrator:
         newpt = jet.pt * raw * corr
         newmass = jet.mass * raw * corr
         return (newpt, newmass)
+
+    def correct_return_p4(self,
+                jet,
+                rho,
+                delta=0,
+                addCorr=False,
+                addShifts=False,
+                metShift=[0, 0]):
+        """Corrects a jet energy (optionally shifting it also by delta times
+        the JEC uncertainty)
+
+       If addCorr, set jet.corr to the correction.
+       If addShifts, set also the +1 and -1 jet shifts 
+
+       The metShift vector will accumulate the x and y changes to the MET
+       from the JEC, i.e. the  negative difference between the new and old jet
+       momentum, for jets eligible for type1 MET corrections, and after
+       subtracting muons. The pt cut is applied to the new corrected pt. This
+       shift can be applied on top of the *OLD TYPE1 MET*, but only if there
+       was no change in the L1 corrections nor in the definition of the type1
+       MET (e.g. jet pt cuts).
+
+        """
+        raw = 1. - jet.rawFactor
+        corr = self.getCorrection(jet, rho, delta)
+        if corr <= 0:
+            return jet.p4()
+        #newpt = jet.pt * raw * corr
+        #newmass = jet.mass * raw * corr
+        return jet.p4() * raw * corr

@@ -9,13 +9,14 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.jme.fatJetUncertainties im
 # JEC dict
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC#Recommended_for_MC
 jecTagsMC = {
-    '2016': 'Summer16_07Aug2017_V11_MC',
-    '2017': 'Fall17_17Nov2017_V32_MC',
-    '2018': 'Autumn18_V19_MC',
     'UL2016_preVFP': 'Summer19UL16APV_V7_MC',
     'UL2016': 'Summer19UL16_V7_MC',
     'UL2017': 'Summer19UL17_V5_MC',
     'UL2018': 'Summer19UL18_V5_MC',
+    #'2016': 'Summer16_07Aug2017_V11_MC',
+    #'2017': 'Fall17_17Nov2017_V32_MC',
+    #'2018': 'Autumn18_V19_MC',
+    
 }
 
 jecTagsFastSim = {
@@ -26,32 +27,18 @@ jecTagsFastSim = {
 
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC#Recommended_for_Data
 archiveTagsDATA = {
-    '2016': 'Summer16_07Aug2017_V11_DATA',
-    '2017': 'Fall17_17Nov2017_V32_DATA',
-    '2018': 'Autumn18_V19_DATA',
+    
     'UL2016_preVFP': 'Summer19UL16APV_V7_DATA',
     'UL2016': 'Summer19UL16_V7_DATA',
     'UL2017': 'Summer19UL17_V5_DATA',
-    'UL2018': 'Summer19UL18_V6_DATA'
+    'UL2018': 'Summer19UL18_V6_DATA',
+    #'2016': 'Summer16_07Aug2017_V11_DATA',
+    #'2017': 'Fall17_17Nov2017_V32_DATA',
+    #'2018': 'Autumn18_V19_DATA',
 }
 
 jecTagsDATA = {
-    '2016B': 'Summer16_07Aug2017BCD_V11_DATA',
-    '2016C': 'Summer16_07Aug2017BCD_V11_DATA',
-    '2016D': 'Summer16_07Aug2017BCD_V11_DATA',
-    '2016E': 'Summer16_07Aug2017EF_V11_DATA',
-    '2016F': 'Summer16_07Aug2017EF_V11_DATA',
-    '2016G': 'Summer16_07Aug2017GH_V11_DATA',
-    '2016H': 'Summer16_07Aug2017GH_V11_DATA',
-    '2017B': 'Fall17_17Nov2017B_V32_DATA',
-    '2017C': 'Fall17_17Nov2017C_V32_DATA',
-    '2017D': 'Fall17_17Nov2017DE_V32_DATA',
-    '2017E': 'Fall17_17Nov2017DE_V32_DATA',
-    '2017F': 'Fall17_17Nov2017F_V32_DATA',
-    '2018A': 'Autumn18_RunA_V19_DATA',
-    '2018B': 'Autumn18_RunB_V19_DATA',
-    '2018C': 'Autumn18_RunC_V19_DATA',
-    '2018D': 'Autumn18_RunD_V19_DATA',
+    
     'UL2016_preVFPB': 'Summer19UL16APV_RunBCD_V7_DATA',
     'UL2016_preVFPC': 'Summer19UL16APV_RunBCD_V7_DATA',
     'UL2016_preVFPD': 'Summer19UL16APV_RunBCD_V7_DATA',
@@ -69,6 +56,22 @@ jecTagsDATA = {
     'UL2018B': 'Summer19UL18_RunB_V6_DATA',
     'UL2018C': 'Summer19UL18_RunC_V6_DATA',
     'UL2018D': 'Summer19UL18_RunD_V6_DATA',
+    #'2016B': 'Summer16_07Aug2017BCD_V11_DATA',
+    #'2016C': 'Summer16_07Aug2017BCD_V11_DATA',
+    #'2016D': 'Summer16_07Aug2017BCD_V11_DATA',
+    #'2016E': 'Summer16_07Aug2017EF_V11_DATA',
+    #2016F': 'Summer16_07Aug2017EF_V11_DATA',
+    #'2016G': 'Summer16_07Aug2017GH_V11_DATA',
+    #'2016H': 'Summer16_07Aug2017GH_V11_DATA',
+    #'2017B': 'Fall17_17Nov2017B_V32_DATA',
+    #'2017C': 'Fall17_17Nov2017C_V32_DATA',
+    #'2017D': 'Fall17_17Nov2017DE_V32_DATA',
+    #'2017E': 'Fall17_17Nov2017DE_V32_DATA',
+    #'2017F': 'Fall17_17Nov2017F_V32_DATA',
+    #'2018A': 'Autumn18_RunA_V19_DATA',
+    #'2018B': 'Autumn18_RunB_V19_DATA',
+    #'2018C': 'Autumn18_RunC_V19_DATA',
+    #'2018D': 'Autumn18_RunD_V19_DATA',
 }
 
 # https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
@@ -177,6 +180,8 @@ def createJMECorrector(isMC=True,
                 jmrVals=jmrValues_,
                 jmsVals=jmsValues_,
                 applySmearing=applySmearing,
+                #applyAK8JMRSmearing = False,
+                #useSubJetSmearingBasedGroomedMass = False,
                 applyHEMfix=applyHEMfix,
                 splitJER=splitJER)
         else:
